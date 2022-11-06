@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <h1>teste</h1>
+</head>
+<body>
+    <form action="{% url 'cadastro'%}" method="POST">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 col-lg-12">
+                <label for="projeto"><b>Projeto</b></label>
+                <input type="text" class="form-control" name="projeto" placeholder="Nome do projeto" required>
+            </div>
+            <div class="col-12 col-lg-12  mt-3">
+                <label for="empresa"><b>Empresa</b></label>
+                <input type="text" class="form-control" name="empresa" placeholder="Empresa" required>
+            </div>
+            <div class="col-12 col-lg-6  mt-3">
+                <label for="cnpj"><b>CNPJ</b></label>
+                <input type="cnpj" class="form-control" name="cnpj" placeholder="cnpj" required>
+            </div>
+            <div class="col-12 text-center mt-5">
+                <button class="btn btn-primary" type="submit">Criar sua conta</button>
+            </div>
+            <hr class="mt-3">
+            <div class="col-12 text-center mt-1">
+                <a class="btn btn-secondary mx-2" href="">Voltar</a>
+            </div>
+        </div>
+    </form>
+    <div class="sg-container mt-3 mx-1 mb-5" style="margin-bottom: 1px">
+        <div class="sg-content">
+            <h3 class="text-center mt-1 ignore-on-print">Tabela</h3>
+            <table class="table table-Light table-bordered table-striped mb-3 mt-2 table-responsive table-hover" id="sg-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="col text-center">ID</th>
+                        <th class="col">Empresa</th>
+                        <th class="col">Data Cadastro</th>
+                        <th class="col">Data Atualizado</th>
+                        <th class="col">CNPJ</th>
+                        <th class="col text-center ignore-on-print excludeExport">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empresas in object_list %}
+                    <tr>
+                        <td class="text-center col-md-1">{{empresas.cod_empresa}}</td>
+                        <td>{{empresas.empresa}}</td>
+                        <td>{{empresas.data_cadastro|date:"d/m/Y H:i" }}</td>
+                        <td>{{empresas.data_atualiza|date:"d/m/Y H:i" }}</td>
+                        <td>{{empresas.cnpj}}</td>
+                        <td class="ignore-on-print excludeExport text-center col-md-2">
+                            <a href="#" class="mx-3" title="Detalhar Conta"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></a>
+                            <a href="#" class="mx-3" title="Excluir Conta"><i class="fa-solid fa-trash-can"></i></a>
+                        </td>
+                    </tr>
+                    
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+</body>
+</html>
