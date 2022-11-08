@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="align-center col-10 offset-1">
+    <div class="d-flex justify-content-between align-items-center">
+        <p class="lead ml-0">My contacts</p>
+        <form hx-post="{% url 'create-regiao' %}" hx-target='#regioes-list' class="d-flex align-items-center" method="POST">
+            {% csrf_token %}
+            <input type="text" name="regiao" class="form-control-sm mr-2" placeholder="Enter region" hx-post="/check-name/" hx-trigger="keyup" hx-target="#name-exist"/>
+            
+            <button hx-post='{% url "create-regiao"%}' hx-target='#regioes-list' type="submit" class="btn btn-success btn-sm">Save</button>
+        </form>
+    </div>
+    <hr/>
+    <table class="table table-Light table-bordered table-striped mb-3 mt-2 table-responsive table-hover" id="sg-table">
+        <thead class="table-dark">
+            <tr>
+                <th class="col text-center">ID</th>
+                <th class="col">Regioes</th>>
+            </tr>
+        </thead>
+    </table>  
+    <div id="regioes-list">
+        {% include 'regioes-list.html' %}
+    </div>
+</div>
+{% endblock content %}

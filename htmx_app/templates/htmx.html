@@ -5,34 +5,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
     <title>Document</title>
     <h1>teste</h1>
 </head>
 <body>
-    <form action="{% url 'cadastro'%}" method="POST">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-12 col-lg-12">
-                <label for="projeto"><b>Projeto</b></label>
-                <input type="text" class="form-control" name="projeto" placeholder="Nome do projeto" required>
+    <div class="row">
+        <div class="col">
+          <form
+            class="form-inline p-3"
+            hx-post="{% url 'empresa_create' %}"
+            hx-target="#expenseTbody"
+            hx-indicator=".htmx-indicator"
+            hx-swap="afterbegin"
+          >
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group p-2">
+              {{ field }}
+              {{ field.errors }}
+              {% if field.help_text %}
+              <small class="text-muted">{{ field.help_text|safe }}</small>
+              {% endif %}
             </div>
-            <div class="col-12 col-lg-12  mt-3">
-                <label for="empresa"><b>Empresa</b></label>
-                <input type="text" class="form-control" name="empresa" placeholder="Empresa" required>
+            {% endfor %}
+            <div class="form-group">
+              <button
+                type="submit"
+                class="btn btn-primary ml-2"
+              >Adicionar</button>
             </div>
-            <div class="col-12 col-lg-6  mt-3">
-                <label for="cnpj"><b>CNPJ</b></label>
-                <input type="cnpj" class="form-control" name="cnpj" placeholder="cnpj" required>
-            </div>
-            <div class="col-12 text-center mt-5">
-                <button class="btn btn-primary" type="submit">Criar sua conta</button>
-            </div>
-            <hr class="mt-3">
-            <div class="col-12 text-center mt-1">
-                <a class="btn btn-secondary mx-2" href="">Voltar</a>
-            </div>
+          </form>
         </div>
-    </form>
+      </div>
     <div class="sg-container mt-3 mx-1 mb-5" style="margin-bottom: 1px">
         <div class="sg-content">
             <h3 class="text-center mt-1 ignore-on-print">Tabela</h3>
@@ -47,26 +52,37 @@
                         <th class="col text-center ignore-on-print excludeExport">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="expenseTbody">
                     {% for empresas in object_list %}
-                    <tr>
-                        <td class="text-center col-md-1">{{empresas.cod_empresa}}</td>
-                        <td>{{empresas.empresa}}</td>
-                        <td>{{empresas.data_cadastro|date:"d/m/Y H:i" }}</td>
-                        <td>{{empresas.data_atualiza|date:"d/m/Y H:i" }}</td>
-                        <td>{{empresas.cnpj}}</td>
-                        <td class="ignore-on-print excludeExport text-center col-md-2">
-                            <a href="#" class="mx-3" title="Detalhar Conta"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></a>
-                            <a href="#" class="mx-3" title="Excluir Conta"><i class="fa-solid fa-trash-can"></i></a>
-                        </td>
-                    </tr>
+                    <tr
+                    hx-target="this"
+                    hx-swap="outerHTML"
+                  >
+                    <td>
+                      <input
+                        type="checkbox"
+                        name="ids"
+                        value="{{ object.pk }}"
+                      >
+                    </td>
+                    <td class="text-center col-md-1">{{empresas.cod_empresa}}</td>
+                    <td>{{empresas.empresa}}</td>
+                    <td>{{empresas.data_cadastro|date:"d/m/Y H:i" }}</td>
+                    <td>{{empresas.data_atualiza|date:"d/m/Y H:i" }}</td>
+                    <td>{{empresas.cnpj}}</td
+                    <td class="text-center">
+                    </td>
+                  </tr>
                     
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
-
-
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}'; //insert csrf token when performing AJAX request 
+        })
+        </script>
 </body>
 </html>
